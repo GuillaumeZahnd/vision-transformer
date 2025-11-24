@@ -20,7 +20,7 @@ class AlibiMultiHeadSelfAttention(nn.Module):
         self.linear = nn.Linear(embedding_dim, embedding_dim)
 
         # ALiBi is used for positional encoding
-        alibi = get_alibi(nb_heads=self.nb_heads, nb_patches_per_side=nb_patches_per_side)
+        alibi, _, _ = get_alibi(nb_heads=self.nb_heads, nb_patches_per_side=nb_patches_per_side)
         self.register_buffer("alibi", alibi, persistent=False)
 
 
@@ -46,10 +46,10 @@ class AlibiMultiHeadSelfAttention(nn.Module):
         scaled_attention_logits = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(q.size(-1))
 
         # Crucially, the positional encoding is applied here
-        attention = torch.softmax(scaled_attention_logits + self.alibi, dim=-1)
+        attention_weights = torch.softmax(scaled_attention_logits + self.alibi, dim=-1)
 
-        values = torch.matmul(attention, v)
-        values = values.transpose(1, 2).contiguous().view((batch_size, sequence_length, embedding_dim))
-        values = self.linear(values)
+        weighted_values = torch.matmul(attention_weights, v)
+        weighted_values = weighted_values.transpose(1, 2).contiguous().view((batch_size, sequence_length, embedding_dim))
+        weighted_values = self.linear(weighted_values)
 
-        return values, attention
+        return weighted_values, attention_weights
