@@ -1,7 +1,6 @@
 import torch
 import math
 import itertools
-from typing import List
 
 
 def get_alibi(nb_heads: int, nb_patches_per_side: int) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -31,7 +30,7 @@ def get_alibi(nb_heads: int, nb_patches_per_side: int) -> tuple[torch.Tensor, to
                 Slope, in the shape (nb_heads).
         """
 
-        def get_slope_power_of_2(nb_heads: int) -> List[int]:
+        def get_slope_power_of_2(nb_heads: int) -> torch.Tensor:
             """
             Compute the slope coefficients, as a geometric series starting from O.5^8.
 
@@ -47,19 +46,20 @@ def get_alibi(nb_heads: int, nb_patches_per_side: int) -> tuple[torch.Tensor, to
             start = (2 ** (-2 ** -(math.log2(nb_heads) - 3)))
 
             ratio = start
-            return [start * ratio ** i for i in range(nb_heads)]
+            slope = [start * ratio ** i for i in range(nb_heads)]
+            slope = torch.tensor(slope, dtype=torch.float32)
+            return slope
 
         if math.log2(nb_heads).is_integer():
             slope = get_slope_power_of_2(nb_heads)
 
         else:
             closest_smaller_power_of_2 = 2 ** math.floor(math.log2(nb_heads))
-            slope = \
-                get_slope_power_of_2(closest_smaller_power_of_2) + \
-                get_slope(2 * closest_smaller_power_of_2)[0::2][:nb_heads - closest_smaller_power_of_2]
+            slope_lower = get_slope_power_of_2(closest_smaller_power_of_2)
+            slope_higher = get_slope(2 * closest_smaller_power_of_2)[0::2][:nb_heads - closest_smaller_power_of_2]
+            slope = torch.cat((slope_lower, slope_higher))
+            slope, _ = torch.sort(slope, dim=0, descending=True)
 
-        slope = torch.tensor(slope, dtype=torch.float32)
-        slope, _ = torch.sort(slope, dim=0, descending=True)
         return slope
 
     slope = get_slope(nb_heads=nb_heads)
