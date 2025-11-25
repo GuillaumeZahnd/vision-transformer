@@ -5,7 +5,14 @@ from alibi_multi_head_self_attention import AlibiMultiHeadSelfAttention
 
 
 class VisionTransformerBlock(nn.Module):
-    def __init__(self, embedding_dim: int, nb_heads: int, nb_patches_height: int, nb_patches_width: int, mlp_expansion: int=4) -> None:
+    def __init__(
+        self,
+        embedding_dim: int,
+        nb_heads: int,
+        nb_patches_height: int,
+        nb_patches_width: int,
+        mlp_expansion: int) -> None:
+
         super().__init__()
 
         self.embedding_dim = embedding_dim
