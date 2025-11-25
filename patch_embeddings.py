@@ -3,7 +3,15 @@ import torch.nn as nn
 
 
 class PatchEmbedding(nn.Module):
-    def __init__(self, nb_channels: int, image_height: int, image_width: int, patch_side_length: int, embedding_dim: int, stride: int) -> None:
+    def __init__(
+        self,
+        nb_channels: int,
+        image_height: int,
+        image_width: int,
+        patch_side_length: int,
+        embedding_dim: int,
+        stride: int) -> None:
+
         super().__init__()
 
         assert stride >= 1 and stride <= patch_side_length, "The stride must be comprised in [1, patch_side_length]."

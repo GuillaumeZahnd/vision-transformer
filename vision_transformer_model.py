@@ -12,6 +12,7 @@ class VisionTransformerModel(nn.Module):
         image_height: int,
         image_width: int,
         patch_side_length: int,
+        stride: int,
         nb_layers: int,
         embedding_dim: int,
         nb_heads: int,
@@ -28,7 +29,7 @@ class VisionTransformerModel(nn.Module):
             image_width=image_width,
             patch_side_length=patch_side_length,
             embedding_dim=embedding_dim,
-            stride=patch_side_length)
+            stride=stride)
 
         self.transformer_layers = \
             nn.ModuleList([
