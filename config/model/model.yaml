@@ -1,0 +1,4 @@
+nb_layers: 7
+embedding_dim: 12
+nb_heads: 4
+mlp_expansion: 4
