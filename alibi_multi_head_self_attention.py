@@ -6,7 +6,7 @@ import math
 
 
 class AlibiMultiHeadSelfAttention(nn.Module):
-    def __init__(self, embedding_dim:int, nb_heads:int, nb_patches_per_side: int) -> None:
+    def __init__(self, embedding_dim:int, nb_heads:int, nb_patches_height: int, nb_patches_width: int) -> None:
         super().__init__()
 
         assert embedding_dim % nb_heads == 0, "The embedding dimension must be a multiple of the number of heads."
@@ -20,7 +20,7 @@ class AlibiMultiHeadSelfAttention(nn.Module):
         self.linear = nn.Linear(embedding_dim, embedding_dim)
 
         # ALiBi is used for positional encoding
-        alibi, _, _ = get_alibi(nb_heads=self.nb_heads, nb_patches_per_side=nb_patches_per_side)
+        alibi, _, _ = get_alibi(nb_heads=self.nb_heads, nb_patches_height=nb_patches_height, nb_patches_width=nb_patches_width)
         self.register_buffer("alibi", alibi, persistent=False)
 
 
@@ -30,11 +30,11 @@ class AlibiMultiHeadSelfAttention(nn.Module):
         See: Press et al., Train Short, Test Long, ICLR 2022 (https://arxiv.org/pdf/2108.12409).
 
         Args:
-            sequence_embedding: Input sequence embedding, in the shape (batch_size, nb_patches_per_side^2 +1, embedding_dim)
+            sequence_embedding: Input sequence embedding, in the shape (batch_size, nb_patches_height*nb_patches_width+1, embedding_dim).
 
         Returns:
-            Weighted sum of values, in the shape (batch_size, nb_patches_per_side^2 +1, embedding_dim)
-            Attention weights, in the shape (batch_size, nb_heads, nb_patches_per_side^2 +1, nb_patches_per_side^2 +1)
+            Weighted sum of values, in the shape (batch_size, nb_patches_height*nb_patches_width+1, embedding_dim).
+            Attention weights, in the shape (batch_size, nb_heads, nb_patches_height*nb_patches_width+1, nb_patches_height*nb_patches_width+1).
         """
 
         batch_size, sequence_length, embedding_dim = sequence_embedding.shape
