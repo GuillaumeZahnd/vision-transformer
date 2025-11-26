@@ -1,48 +1,38 @@
 import torch
 import torch.nn as nn
+from omegaconf import DictConfig
 
 from patch_embeddings import PatchEmbedding
 from vision_transformer_block import VisionTransformerBlock
 
 
 class VisionTransformerModel(nn.Module):
-    def __init__(
-        self,
-        nb_channels: int,
-        image_height: int,
-        image_width: int,
-        patch_side_length: int,
-        stride: int,
-        nb_layers: int,
-        embedding_dim: int,
-        nb_heads: int,
-        mlp_expansion: int,
-        nb_classes: int) -> None:
+    def __init__(self, cfg: DictConfig) -> None:
 
         super().__init__()
 
-        self.cls_token = nn.Parameter(torch.randn(1, embedding_dim))
+        self.cls_token = nn.Parameter(torch.randn(1, cfg.model.embedding_dim))
 
         self.embed_patches = PatchEmbedding(
-            nb_channels=nb_channels,
-            image_height=image_height,
-            image_width=image_width,
-            patch_side_length=patch_side_length,
-            embedding_dim=embedding_dim,
-            stride=stride)
+            nb_channels=cfg.dataset.nb_channels,
+            image_height=cfg.dataset.image_height,
+            image_width=cfg.dataset.image_width,
+            patch_side_length=cfg.model.patch_side_length,
+            embedding_dim=cfg.model.embedding_dim,
+            stride=cfg.model.stride)
 
         self.transformer_layers = \
             nn.ModuleList([
                 VisionTransformerBlock(
-                    embedding_dim=embedding_dim,
-                    nb_heads=nb_heads,
+                    embedding_dim=cfg.model.embedding_dim,
+                    nb_heads=cfg.model.nb_heads,
                     nb_patches_height=self.embed_patches.get_nb_patches_height(),
                     nb_patches_width=self.embed_patches.get_nb_patches_width(),
-                    mlp_expansion=mlp_expansion)
-                for _ in range(nb_layers)])
+                    mlp_expansion=cfg.model.mlp_expansion)
+                for _ in range(cfg.model.nb_layers)])
 
         self.multilayer_perceptron_classification_head = nn.Sequential(
-            nn.Linear(embedding_dim, nb_classes),
+            nn.Linear(cfg.model.embedding_dim, cfg.dataset.nb_classes),
             nn.Softmax(dim=-1))
 
 
