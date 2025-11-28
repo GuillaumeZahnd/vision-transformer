@@ -37,11 +37,14 @@ def select_dataloaders(cfg: DictConfig) -> tuple[DataLoader, DataLoader, DataLoa
             training_validation_split=cfg.dataset.training_validation_split)
 
         dataloader_training = DataLoader(
-            dataset_training, batch_size=cfg.training.batch_size, shuffle=True)
+            dataset_training, batch_size=cfg.training.batch_size, shuffle=True,
+            num_workers=cfg.environment.num_workers, persistent_workers=True, prefetch_factor=16)
         dataloader_validation = DataLoader(
-            dataset_validation, batch_size=cfg.training.batch_size, shuffle=False)
+            dataset_validation, batch_size=cfg.training.batch_size, shuffle=False,
+            num_workers=cfg.environment.num_workers, persistent_workers=True, prefetch_factor=16)
         dataloader_test = DataLoader(
-            dataset_test, batch_size=cfg.training.batch_size, shuffle=False)
+            dataset_test, batch_size=cfg.training.batch_size, shuffle=False,
+            num_workers=cfg.environment.num_workers, persistent_workers=True, prefetch_factor=16)
 
         return dataloader_training, dataloader_validation, dataloader_test
 

@@ -1,0 +1,3 @@
+accelerator: "gpu"
+torch_matmul_precision: "high"
+num_workers: 10
