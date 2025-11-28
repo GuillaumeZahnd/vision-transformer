@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import math
 
-from get_alibi import get_alibi
+from source.get_alibi import get_alibi
 
 
 class AlibiMultiHeadSelfAttention(nn.Module):

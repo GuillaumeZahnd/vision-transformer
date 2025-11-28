@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from alibi_multi_head_self_attention import AlibiMultiHeadSelfAttention
+from source.alibi_multi_head_self_attention import AlibiMultiHeadSelfAttention
 
 
 class VisionTransformerBlock(nn.Module):

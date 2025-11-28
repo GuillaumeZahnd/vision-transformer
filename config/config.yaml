@@ -1,8 +1,7 @@
+run_name: "run_placeholder"
+experiment_name: "experiment_placeholder"
+accelerator: "gpu"
 defaults:
   - dataset: cifar100
   - model: model
   - training: training
-
-run_name: "vit_dev_test"  
-accelerator: "gpu"
-

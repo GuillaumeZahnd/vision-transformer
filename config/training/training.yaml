@@ -5,3 +5,4 @@ loss: "cross_entropy"
 optimizer: "sgd"
 scheduler_step_size: 1
 scheduler_gamma: 0.99
+torch_matmul_precision: "high"

@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 from omegaconf import DictConfig
 
-from patch_embeddings import PatchEmbedding
-from vision_transformer_block import VisionTransformerBlock
+from source.patch_embeddings import PatchEmbedding
+from source.vision_transformer_block import VisionTransformerBlock
 
 
 class VisionTransformerModel(nn.Module):
