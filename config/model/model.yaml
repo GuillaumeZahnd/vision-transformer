@@ -1,6 +1,6 @@
-nb_layers: 7
-embedding_dim: 12
-nb_heads: 4
-patch_side_length: 8
-stride: 8
+nb_layers: 8
+embedding_dim: 40
+nb_heads: 10
+patch_side_length: 4
+stride: 4
 mlp_expansion: 4

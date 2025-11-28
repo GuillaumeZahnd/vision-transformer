@@ -2,6 +2,6 @@ nb_epochs: 50
 learning_rate: 1e-3
 batch_size: 128
 loss: "cross_entropy"
-optimizer: "sgd"
+optimizer: "adam"
 scheduler_step_size: 1
 scheduler_gamma: 0.99

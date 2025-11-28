@@ -5,3 +5,4 @@ defaults:
   - model: model
   - training: training
   - environment: environment
+  - _self_    

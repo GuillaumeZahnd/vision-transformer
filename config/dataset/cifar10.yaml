@@ -1,0 +1,6 @@
+name: "CIFAR10"
+nb_channels: 3
+image_height: 32
+image_width: 32
+nb_classes: 10
+training_validation_split: 0.9
