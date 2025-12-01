@@ -54,7 +54,7 @@ class TrainingRoutine(LightningModule):
         _, labels = batch
         predictions = self.predict_step(batch, batch_idx)
         loss = self.loss_function(predictions, labels)
-        self.log(name="test_step_loss", value=loss, batch_size=reference_images.shape[0])
+        self.log(name="test_step_loss", value=loss, batch_size=labels.shape[0])
 
 
     def predict_step(self, batch, batch_idx):

@@ -35,7 +35,7 @@ Unlike the traditional sinusoidal position embeddings approach, ALiBi [applies](
 
 ### Alternatives
 
-Other alternative approach for positional encoding include [Rotary Position Embedding (RoPE)](https://arxiv.org/pdf/2403.13298) with all its variants: vanilla 1D, Axial 2D, Mixed 2D, and the ["Golden gate RoPE"](https://jerryxio.ng/posts/nd-rope/), as well as the [Lie Rotational Positional Encodings (LieRE)](https://arxiv.org/pdf/2406.10322v5).
+Other alternative approach for positional encoding include [Rotary Position Embedding (RoPE)](https://arxiv.org/pdf/2403.13298) with all its variants: vanilla 1D, Axial 2D, Mixed 2D, and the ["Golden gate RoPE"](https://jerryxio.ng/posts/nd-rope/), as well as [Lie Rotational Positional Encodings (LieRE)](https://arxiv.org/pdf/2406.10322v5).
 
 ## Python environment
 
