@@ -49,5 +49,5 @@ def run_training_pipeline(cfg: DictConfig):
         dataloaders=dataloader_test,
         ckpt_path=checkpoint_path_for_test)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_training_pipeline()
