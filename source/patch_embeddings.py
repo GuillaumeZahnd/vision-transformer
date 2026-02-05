@@ -39,22 +39,19 @@ class PatchEmbedding(nn.Module):
         return self.conv2d(images).flatten(2).transpose(1, 2)
 
 
-    def get_nb_patches_height(self) -> int:
-        """
-        Number of patches along the height of the image.
-        """
+    @property
+    def nb_patches_height(self) -> int:
+        """Number of patches along the height of the image"""
         return self._nb_patches_height
 
 
-    def get_nb_patches_width(self) -> int:
-        """
-        Number of patches along the width of the image.
-        """
+    @property
+    def nb_patches_width(self) -> int:
+        """Number of patches along the width of the image"""
         return self._nb_patches_width
 
 
-    def get_nb_patches_total(self) -> int:
-        """
-        Number of patches in the image.
-        """
+    @property
+    def nb_patches_total(self) -> int:
+        """Number of patches in the image"""
         return self._nb_patches_height * self._nb_patches_width

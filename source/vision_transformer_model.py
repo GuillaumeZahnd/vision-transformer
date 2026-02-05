@@ -26,8 +26,8 @@ class VisionTransformerModel(nn.Module):
                 VisionTransformerBlock(
                     embedding_dim=cfg.model.embedding_dim,
                     nb_heads=cfg.model.nb_heads,
-                    nb_patches_height=self.embed_patches.get_nb_patches_height(),
-                    nb_patches_width=self.embed_patches.get_nb_patches_width(),
+                    nb_patches_height=self.embed_patches.nb_patches_height(),
+                    nb_patches_width=self.embed_patches.nb_patches_width(),
                     mlp_expansion=cfg.model.mlp_expansion)
                 for _ in range(cfg.model.nb_layers)])
 

@@ -2,8 +2,7 @@
 
 ## ALiBi: Attention with Linear Biase
 
-ALiBi is a meaningful alternative to traditional sinusoidal position embeddings. See [Press et al., Train Short, Test Long (2022)](https://arxiv.org/pdf/2108.12409). From their abstract: *"ALiBi does not add positional embeddings
-to word embeddings; instead, it biases query-key attention scores with a penalty that is proportional to their distance."*
+ALiBi is a meaningful alternative to traditional sinusoidal position embeddings. See [Press et al., Train Short, Test Long (2022)](https://arxiv.org/pdf/2108.12409). From their abstract: *"ALiBi does not add positional embeddings to word embeddings; instead, it biases query-key attention scores with a penalty that is proportional to their distance."*
 
 ### Patches
 
