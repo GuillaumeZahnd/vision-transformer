@@ -25,6 +25,7 @@ def run_training_pipeline(cfg: DictConfig):
 
     trainer = lightning.Trainer(
         accelerator=cfg.environment.accelerator,
+        precision=cfg.environment.get("precision", 32),
         max_epochs=cfg.training.nb_epochs,
         profiler=None,
         num_sanity_val_steps=0,
