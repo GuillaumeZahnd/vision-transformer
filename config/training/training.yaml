@@ -6,3 +6,6 @@ label_smoothing: 0.1
 optimizer: "adam"
 scheduler_step_size: 1
 scheduler_gamma: 0.99
+warmup_epochs: 10
+warmup_start_factor: 0.01
+warmup_end_factor: 1.0

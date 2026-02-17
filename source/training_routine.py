@@ -64,9 +64,36 @@ class TrainingRoutine(LightningModule):
 
 
     def configure_optimizers(self):
+
         optimizer = select_optimizer(cfg=self.cfg, parameters=self.parameters())
-        scheduler = torch.optim.lr_scheduler.StepLR(
+
+        # Warm-up scheduler: linear increase of the LR, from start_factor*lr to end_factor*lr during the warmup period
+        warmup_period = self.cfg.training.get("warmup_epochs", 10)
+        warmup_scheduler = torch.optim.lr_scheduler.LinearLR(
+            optimizer,
+            start_factor=self.cfg.training.get("warmup_start_factor", 0.01),
+            end_factor=self.cfg.training.get("warmup_end_factor", 1.0),
+            total_iters=warmup_period
+        )
+
+        # Main scheduler: step LR decay
+        main_scheduler = torch.optim.lr_scheduler.StepLR(
             optimizer=optimizer,
-            step_size=self.cfg.training.scheduler_step_size,
-            gamma=self.cfg.training.scheduler_gamma)
-        return {"optimizer": optimizer, "lr_scheduler": scheduler}
+            step_size=self.cfg.training.get("scheduler_step_size", 1),
+            gamma=self.cfg.training.get("scheduler_gamma", 0.99)
+        )
+
+        # Chaining both schedulers together (indicating at which epoch to switch from "warmup" to "main")
+        scheduler = torch.optim.lr_scheduler.SequentialLR(
+            optimizer,
+            schedulers=[warmup_scheduler, main_scheduler],
+            milestones=[warmup_period]
+        )
+
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": {
+                "scheduler": scheduler,
+                "interval": "epoch"
+            }
+        }
