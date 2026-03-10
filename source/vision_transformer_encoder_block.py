@@ -4,14 +4,25 @@ import torch.nn as nn
 from source.alibi_multi_head_self_attention import AlibiMultiHeadSelfAttention
 
 
-class VisionTransformerBlock(nn.Module):
+class VisionTransformerEncoderBlock(nn.Module):
     def __init__(
         self,
         embedding_dim: int,
         nb_heads: int,
         nb_patches_height: int,
         nb_patches_width: int,
-        mlp_expansion: int) -> None:
+        mlp_expansion: int
+    ) -> None:
+        """
+        Transformer encoder block.
+
+        Args:
+            embedding_dim: Dimensionality of the encoder's output features.
+            nb_heads: Number of heads for the multi-head attention mechanism.
+            nb_patches_height: Number of patches along the height of the image.
+            nb_patches_width: Number of patches along the width of the image.
+            mlp_expansion: Expansion factor for the multilayer perceptron.
+        """
 
         super().__init__()
 
@@ -25,12 +36,14 @@ class VisionTransformerBlock(nn.Module):
             embedding_dim=embedding_dim,
             nb_heads=nb_heads,
             nb_patches_height=nb_patches_height,
-            nb_patches_width=nb_patches_width)
+            nb_patches_width=nb_patches_width
+        )
 
         self.feedforward_block = nn.Sequential(
             nn.Linear(in_features=embedding_dim, out_features=mlp_expansion * embedding_dim),
             nn.GELU(),
-            nn.Linear(in_features=mlp_expansion * embedding_dim, out_features=embedding_dim))
+            nn.Linear(in_features=mlp_expansion * embedding_dim, out_features=embedding_dim)
+        )
 
 
     def _residual_block_1(self, input_embeddings: torch.Tensor) -> torch.Tensor:
@@ -69,7 +82,7 @@ class VisionTransformerBlock(nn.Module):
 
     def forward(self, input_embeddings: torch.Tensor) -> torch.Tensor:
         """
-        Transformer block, combining two residual blocks: an attention block followed by a multilayer perceptron block.
+        Transformer encoding pathway, combining two residual blocks: an attention block followed by a multilayer perceptron block.
 
         Args:
             input_embeddings: Input embeddings, in the shape (batch_size, nb_patches_height*nb_patches_width+1, embedding_dim).
