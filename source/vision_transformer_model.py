@@ -56,8 +56,8 @@ class VisionTransformerModel(nn.Module):
                 for _ in range(cfg.model.nb_layers)]
         )
 
-        # This is the step before the cross-entropy loss, which applies a softmax
-        self.multilayer_perceptron_classification_head = nn.Linear(cfg.model.embedding_dim, cfg.dataset.nb_classes)
+        if self.model_type == ModelMode.CLASSIFICATION.value:
+            self.multilayer_perceptron_classification_head = nn.Linear(cfg.model.embedding_dim, cfg.dataset.nb_classes)
 
         if self.model_type == ModelMode.SEGMENTATION.value:
             self.decoder = VisionTransformerSegmentationBlock(

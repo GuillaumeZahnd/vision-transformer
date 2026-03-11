@@ -3,13 +3,13 @@ import torch.nn as nn
 
 
 class VisionTransformerSegmentationBlock(nn.Module):
-    def __init__(self, embedding_dim: int, nb_semantic_classes: int, nb_feature_maps: int, patch_size: int) -> None:
+    def __init__(self, embedding_dim: int, nb_classes: int, nb_feature_maps: int, patch_size: int) -> None:
         """
         Transformer segmentation block.
 
         Args:
             embedding_dim: Dimensionality of the encoder's output features.
-            nb_semantic_classes: Number of pixel-level segmentation classes, including the background.
+            nb_classes: Number of pixel-level segmentation classes, including the background.
             nb_feature_maps: Number of intermediate encoder layers extracted for fusion.
             patch_size: Side length of each patch, in pixels. Patches are square.
         """
@@ -25,7 +25,7 @@ class VisionTransformerSegmentationBlock(nn.Module):
         )
 
         # Maps embeddings to semantic classes
-        self.classifier = nn.Conv2d(embedding_dim, nb_semantic_classes, kernel_size=1)
+        self.classifier = nn.Conv2d(embedding_dim, nb_classes, kernel_size=1)
 
 
     def forward(self, multi_scale_feature_maps: list[torch.Tensor]) -> torch.Tensor:

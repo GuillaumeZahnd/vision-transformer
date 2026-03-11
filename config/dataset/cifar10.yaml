@@ -1,7 +1,7 @@
 name: "CIFAR10"
+task_type: "image_classification"
 nb_channels: 3
 image_height: 32
 image_width: 32
 nb_classes: 10  # image-level classification classes (ImageNet)
-nb_semantic_labels: 0  # pixel-level segmentation classes
 training_validation_split: 0.9

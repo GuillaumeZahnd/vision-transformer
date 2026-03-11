@@ -1,9 +1,9 @@
 from lightning import LightningModule
 from omegaconf import DictConfig
 import torch
-import torchmetrics
 
 from source.select_loss import select_loss
+from source.select_accuracy import select_accuracy
 from source.select_optimizer import select_optimizer
 from source.vision_transformer_model import VisionTransformerModel
 
@@ -13,7 +13,7 @@ class TrainingRoutine(LightningModule):
         super().__init__()
         self.cfg = cfg
         self.loss_function = select_loss(cfg=cfg)
-        self.accuracy = torchmetrics.classification.Accuracy(task="multiclass", num_classes=cfg.dataset.nb_classes)
+        self.accuracy = select_accuracy(cfg=cfg)
         self.model = VisionTransformerModel(cfg=cfg)
 
 

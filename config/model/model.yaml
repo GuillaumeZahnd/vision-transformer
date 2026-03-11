@@ -1,7 +1,7 @@
 model_type: "classification"  # "classification" or "segmentation"
-nb_layers: 8
-layers_for_segmentation: [3, 5, 7]  # Indices are zero-indexed
-embedding_dim: 40
+nb_layers: 12
+layers_for_segmentation: [3, 7, 11]  # Indices are zero-indexed
+embedding_dim: 20
 nb_heads: 10
 patch_side_length: 4
 stride: 4
