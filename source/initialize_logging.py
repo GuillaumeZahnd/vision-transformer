@@ -6,7 +6,8 @@ from lightning.pytorch.callbacks import ModelCheckpoint, Callback
 def initialize_logging(
     experiment_name: str,
     run_name: str,
-    mlflow_tracking_uri: str) -> tuple[MLFlowLogger, list[Callback]]:
+    mlflow_tracking_uri: str
+) -> tuple[MLFlowLogger, list[Callback]]:
     """
     Initialize logger and checkpoint for MLFlow Tracking.
 
@@ -26,9 +27,11 @@ def initialize_logging(
         experiment_name=experiment_name,
         run_name=run_name,
         tracking_uri=mlflow_tracking_uri,
-        synchronous=False)
+        synchronous=False
+    )
 
     checkpoints = [
-        ModelCheckpoint(save_top_k=1, monitor="validation_loss", mode="min", filename=CHECKPOINTS_FILENAME)]
+        ModelCheckpoint(save_top_k=1, monitor="validation_loss", mode="min", filename=CHECKPOINTS_FILENAME)
+    ]
 
     return logger, checkpoints

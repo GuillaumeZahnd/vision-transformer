@@ -10,7 +10,8 @@ class PatchEmbedding(nn.Module):
         image_width: int,
         patch_side_length: int,
         embedding_dim: int,
-        stride: int) -> None:
+        stride: int
+    ) -> None:
 
         super().__init__()
 
@@ -23,7 +24,8 @@ class PatchEmbedding(nn.Module):
             in_channels=nb_channels,
             out_channels=embedding_dim,
             kernel_size=patch_side_length,
-            stride=stride)
+            stride=stride
+        )
 
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:

@@ -39,7 +39,8 @@ class TrainingRoutine(LightningModule):
                 add_dataloader_idx=False,
                 batch_size=labels.shape[0],
                 on_step=False,
-                on_epoch=True)
+                on_epoch=True
+            )
         else:
             self.log(
                 name="test_loss",
@@ -47,7 +48,8 @@ class TrainingRoutine(LightningModule):
                 add_dataloader_idx=False,
                 batch_size=labels.shape[0],
                 on_step=False,
-                on_epoch=True)
+                on_epoch=True
+            )
 
 
     def test_step(self, batch, batch_idx):

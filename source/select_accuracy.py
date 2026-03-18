@@ -22,6 +22,6 @@ def select_accuracy(cfg: DictConfig) -> torch.nn:
         accuracy = torchmetrics.classification.BinaryAccuracy()
 
     else:
-        raise ValueError("Unknown task type '{}'. Valid values are {}.".format(task_nickname, [e.value for e in TaskType]))
+        raise ValueError(f"Unknown task type '{task_nickname}'. Valid values are {[e.value for e in TaskType]}.")
 
     return accuracy

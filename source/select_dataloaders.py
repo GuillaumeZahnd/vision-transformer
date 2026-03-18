@@ -38,10 +38,12 @@ def select_dataloaders(cfg: DictConfig) -> tuple[DataLoader, DataLoader, DataLoa
 
         dataset_training, dataset_validation = _split_validation_from_training(
             dataset_training=dataset_training,
-            training_validation_split=cfg.dataset.training_validation_split)
+            training_validation_split=cfg.dataset.training_validation_split
+        )
 
         dataloader_training, dataloader_validation, dataloader_test = get_dataloaders(
-            cfg=cfg, dataset_training=dataset_training, dataset_validation=dataset_validation, dataset_test=dataset_test)
+            cfg=cfg, dataset_training=dataset_training, dataset_validation=dataset_validation, dataset_test=dataset_test
+        )
 
     # CIFAR 100
     elif dataset_nickname == Datasets.CIFAR100.value:
@@ -50,17 +52,20 @@ def select_dataloaders(cfg: DictConfig) -> tuple[DataLoader, DataLoader, DataLoa
 
         dataset_training, dataset_validation = _split_validation_from_training(
             dataset_training=dataset_training,
-            training_validation_split=cfg.dataset.training_validation_split)
+            training_validation_split=cfg.dataset.training_validation_split
+        )
 
         dataloader_training, dataloader_validation, dataloader_test = get_dataloaders(
-            cfg=cfg, dataset_training=dataset_training, dataset_validation=dataset_validation, dataset_test=dataset_test)
+            cfg=cfg, dataset_training=dataset_training, dataset_validation=dataset_validation, dataset_test=dataset_test
+        )
 
     # CHEST X RAY
     elif dataset_nickname == Datasets.CHESTXRAY.value:
         dataset_training, dataset_validation, dataset_test = get_chest_x_ray_datasets(cfg=cfg)
 
         dataloader_training, dataloader_validation, dataloader_test = get_dataloaders(
-            cfg=cfg, dataset_training=dataset_training, dataset_validation=dataset_validation, dataset_test=dataset_test)
+            cfg=cfg, dataset_training=dataset_training, dataset_validation=dataset_validation, dataset_test=dataset_test
+        )
 
     else:
         raise ValueError("Unknown dataset '{}'. Valid values are {}.".format(dataset_nickname, [e.value for e in Datasets]))

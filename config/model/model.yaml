@@ -1,4 +1,4 @@
-model_type: "classification"  # "classification" or "segmentation"
+task: "classification"  # "classification" or "segmentation"
 nb_layers: 12
 layers_for_segmentation: [3, 7, 11]  # Indices are zero-indexed
 embedding_dim: 20

@@ -2,14 +2,14 @@ import torch
 import logging
 import lightning
 import hydra
-from omegaconf import DictConfig
-from omegaconf import OmegaConf
+from omegaconf import DictConfig, OmegaConf
 
 from source.training_routine import TrainingRoutine
 from source.select_dataloaders import select_dataloaders
 from source.initialize_logging import initialize_logging
 
 logging.basicConfig(level=logging.INFO)
+
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def run_training_pipeline(cfg: DictConfig):
@@ -19,7 +19,8 @@ def run_training_pipeline(cfg: DictConfig):
     mlf_logger, checkpoints = initialize_logging(
         experiment_name=cfg.experiment_name,
         run_name=cfg.run_name,
-        mlflow_tracking_uri=cfg.environment.mlflow_local_tracking_uri)
+        mlflow_tracking_uri=cfg.environment.mlflow_local_tracking_uri
+    )
 
     mlf_logger.log_hyperparams(params=cfg)
 
@@ -30,7 +31,8 @@ def run_training_pipeline(cfg: DictConfig):
         profiler=None,
         num_sanity_val_steps=0,
         callbacks=checkpoints,
-        logger=mlf_logger)
+        logger=mlf_logger
+    )
 
     routine = TrainingRoutine(cfg=cfg)
 
@@ -41,14 +43,17 @@ def run_training_pipeline(cfg: DictConfig):
     trainer.fit(
         model=routine,
         train_dataloaders=dataloader_training,
-        val_dataloaders=[dataloader_validation, dataloader_test])
+        val_dataloaders=[dataloader_validation, dataloader_test]
+    )
 
     checkpoint_path_for_test = checkpoints[0].best_model_path
 
     trainer.test(
         model=routine,
         dataloaders=dataloader_test,
-        ckpt_path=checkpoint_path_for_test)
+        ckpt_path=checkpoint_path_for_test
+    )
+
 
 if __name__ == "__main__":
     run_training_pipeline()

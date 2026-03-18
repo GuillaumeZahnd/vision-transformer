@@ -15,7 +15,8 @@ def get_dataloaders(
         num_workers=cfg.environment.num_workers,
         shuffle=True,
         persistent_workers=True,
-        prefetch_factor=16)
+        prefetch_factor=16
+    )
 
     dataloader_validation = DataLoader(
         dataset_validation,
@@ -23,7 +24,8 @@ def get_dataloaders(
         num_workers=cfg.environment.num_workers,
         shuffle=False,
         persistent_workers=True,
-        prefetch_factor=16)
+        prefetch_factor=16
+    )
 
     dataloader_test = DataLoader(
         dataset_test,
@@ -31,6 +33,7 @@ def get_dataloaders(
         num_workers=cfg.environment.num_workers,
         shuffle=False,
         persistent_workers=True,
-        prefetch_factor=16)
+        prefetch_factor=16
+    )
 
     return dataloader_training, dataloader_validation, dataloader_test
