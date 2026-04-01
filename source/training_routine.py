@@ -17,9 +17,13 @@ class TrainingRoutine(LightningModule):
         self.model = VisionTransformerModel(cfg=cfg)
 
 
+    def forward(self, x):
+        return self.model(input_images=x)
+
+
     def training_step(self, batch, batch_idx):
         images, labels = batch
-        predictions = self.model(input_images=images)
+        predictions = self.forward(x=images)
         loss = self.loss_function(input=predictions, target=labels)
         self.log(name="training_loss", value=loss, batch_size=images.shape[0], on_step=False, on_epoch=True)
         accuracy = self.accuracy(predictions, labels)
@@ -61,7 +65,7 @@ class TrainingRoutine(LightningModule):
 
     def predict_step(self, batch, batch_idx):
         images, _ = batch
-        predictions = self.model(input_images=images)
+        predictions = self.forward(x=images)
         return predictions
 
 

@@ -2,6 +2,7 @@ from omegaconf import DictConfig
 from pathlib import Path
 from torch.utils.data import Dataset
 from torchvision.transforms import ToTensor
+from PIL import Image
 
 
 class ChestXRayDataset(Dataset):
