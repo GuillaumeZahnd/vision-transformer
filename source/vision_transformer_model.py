@@ -31,8 +31,7 @@ class VisionTransformerModel(nn.Module):
 
         super().__init__()
 
-        self.task = cfg.model.task
-        self.embedding_dim = cfg.model.embedding_dim
+        self.cfg = cfg
 
         self.cls_token = nn.Parameter(torch.randn(1, cfg.model.embedding_dim))
 
@@ -56,10 +55,10 @@ class VisionTransformerModel(nn.Module):
                 for _ in range(cfg.model.nb_layers)]
         )
 
-        if self.task == Task.CLASSIFICATION.value:
+        if cfg.model.task == Task.CLASSIFICATION.value:
             self.multilayer_perceptron_classification_head = nn.Linear(cfg.model.embedding_dim, cfg.dataset.nb_classes)
 
-        if self.task == Task.SEGMENTATION.value:
+        elif cfg.model.task == Task.SEGMENTATION.value:
             self.decoder = VisionTransformerSegmentationBlock(
                 embedding_dim=cfg.model.embedding_dim,
                 nb_classes=cfg.dataset.nb_semantic_labels,
@@ -93,26 +92,26 @@ class VisionTransformerModel(nn.Module):
         for layer_id, layer in enumerate(self.transformer_layers):
             token_embeddings = layer(token_embeddings)
 
-            if self.task == "segmentation" and layer_id in cfg.model.layers_for_segmentation:
+            if self.cfg.model.task == "segmentation" and layer_id in self.cfg.model.layers_for_segmentation:
                 latent = token_embeddings[:, 1:, :]  # Exclude the CLS token
                 latent = latent.transpose(1, 2)  # Transpose (B, N, D) -> (B, D, N)
                 latent = latent.reshape(  # Reshape (B, D, N) -> (B, D, H, W)
                     batch_size,
-                    self.embedding_dim,
+                    self.cfg.model.embedding_dim,
                     self.embed_patches.nb_patches_height,
                     self.embed_patches.nb_patches_width
                 )
                 multi_scale_feature_maps.append(latent)
 
-        if self.task == Task.CLASSIFICATION.value:
+        if self.cfg.model.task == Task.CLASSIFICATION.value:
             # Utilize the cls slice (at index zero) to represent the token considered for the classification task
             image_class_token_output = token_embeddings[:, 0, :]
             logits = self.multilayer_perceptron_classification_head(image_class_token_output)
             return logits
 
-        elif self.task == Task.SEGMENTATION.value:
+        elif self.cfg.model.task == Task.SEGMENTATION.value:
             segmented_image = self.decoder(multi_scale_feature_maps)
             return segmented_image
 
         else:
-            raise ValueError("Unknown task '{}'. Valid values are {}.".format(self.task, [e.value for e in Task]))
+            raise ValueError("Unknown task '{}'. Valid values are {}.".format(self.cfg.model.task, [e.value for e in Task]))

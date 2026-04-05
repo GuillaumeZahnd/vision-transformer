@@ -24,10 +24,15 @@ class TrainingRoutine(LightningModule):
     def training_step(self, batch, batch_idx):
         images, labels = batch
         predictions = self.forward(x=images)
+
         loss = self.loss_function(input=predictions, target=labels)
+
+        predictions_indices = torch.argmax(predictions, dim=1)
+        accuracy = self.accuracy(predictions_indices, labels)
+
         self.log(name="training_loss", value=loss, batch_size=images.shape[0], on_step=False, on_epoch=True)
-        accuracy = self.accuracy(predictions, labels)
         self.log('training_accuracy', accuracy, on_step=False, on_epoch=True)
+
         return loss
 
 

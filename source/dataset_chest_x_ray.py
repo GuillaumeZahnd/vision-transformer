@@ -43,11 +43,11 @@ class ChestXRayDataset(Dataset):
         img_path = Path(self.dataset_dir) / self.site_dir / "img" / file_name
         mask_path = Path(self.dataset_dir) / self.site_dir / "mask" / file_name
 
-        image = Image.open(img_path).convert("RGB")
+        image = Image.open(img_path).convert("L")
         mask = Image.open(mask_path).convert("L")
 
-        image = self.to_tensor(image)
-        mask = self.to_tensor(mask)
+        image = self.to_tensor(image)  # [Channel=1, Height, Width]
+        mask = self.to_tensor(mask).squeeze().long()  # [Height, Width], of data type "Long"
 
         return image, mask
 
