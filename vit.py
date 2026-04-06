@@ -7,6 +7,7 @@ from omegaconf import DictConfig, OmegaConf
 from source.training_routine import TrainingRoutine
 from source.select_dataloaders import select_dataloaders
 from source.initialize_logging import initialize_logging
+from source.segmentation_logger_callback import SegmentationLoggerCallback
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,6 +23,12 @@ def run_training_pipeline(cfg: DictConfig):
         mlflow_tracking_uri=cfg.environment.mlflow_local_tracking_uri
     )
 
+    if cfg.model.task == "segmentation":
+        image_segmentation_logger = SegmentationLoggerCallback(nb_examples=cfg.get("log_samples", 4))
+        custom_callbacks = checkpoints + [image_segmentation_logger]
+    else:
+        custom_callbacks = checkpoints
+
     mlf_logger.log_hyperparams(params=cfg)
 
     trainer = lightning.Trainer(
@@ -30,7 +37,7 @@ def run_training_pipeline(cfg: DictConfig):
         max_epochs=cfg.training.nb_epochs,
         profiler=None,
         num_sanity_val_steps=0,
-        callbacks=checkpoints,
+        callbacks=custom_callbacks,
         logger=mlf_logger
     )
 
