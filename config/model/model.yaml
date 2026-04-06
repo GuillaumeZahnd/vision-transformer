@@ -1,8 +1,9 @@
-task: "classification"  # "classification" or "segmentation"
+task: "segmentation"  # "classification" or "segmentation"
 nb_layers: 12
 layers_for_segmentation: [3, 7, 11]  # Indices are zero-indexed
-embedding_dim: 20
-nb_heads: 10
-patch_side_length: 4
-stride: 4
+embedding_dim: 128
+nb_heads: 8
+patch_side_length: 16
+stride: 16
 mlp_expansion: 4
+pretrained: True

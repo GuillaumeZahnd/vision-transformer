@@ -52,6 +52,6 @@ def select_loss(cfg: DictConfig) -> torch.nn:
         loss = BinaryDiceLoss()
 
     else:
-        raise ValueError("Unknown loss '{}'. Valid values are {}.".format(loss_nickname, [e.value for e in Loss]))
+        raise ValueError(f"Unknown loss '{loss_nickname}'. Valid values are {[t.value for t in Loss]}.")
 
     return loss

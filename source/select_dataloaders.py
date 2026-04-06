@@ -68,6 +68,6 @@ def select_dataloaders(cfg: DictConfig) -> tuple[DataLoader, DataLoader, DataLoa
         )
 
     else:
-        raise ValueError("Unknown dataset '{}'. Valid values are {}.".format(dataset_nickname, [e.value for e in Datasets]))
+        raise ValueError(f"Unknown dataset '{dataset_nickname}'. Valid values are {[t.value for t in Datasets]}.")
 
     return dataloader_training, dataloader_validation, dataloader_test

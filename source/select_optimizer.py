@@ -19,5 +19,4 @@ def select_optimizer(cfg: DictConfig, parameters: Callable) -> torch.optim.Optim
         return torch.optim.Adam(params=parameters, lr=cfg.training.learning_rate)
 
     else:
-        raise ValueError(
-            "Unknown optimizer '{}'. Valid values are {}.".format(optimizer_nickname, [e.value for e in Optimizer]))
+        raise ValueError(f"Unknown optimizer '{optimizer_nickname}'. Valid values are {[t.value for t in Optimizer]}.")
