@@ -7,3 +7,4 @@ patch_side_length: 16
 stride: 16
 mlp_expansion: 4
 pretrained: True
+model_type: "custom_vit"  # "custom_vit", "efficientnet"

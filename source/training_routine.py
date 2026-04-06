@@ -5,7 +5,7 @@ import torch
 from source.select_loss import select_loss
 from source.select_accuracy import select_accuracy
 from source.select_optimizer import select_optimizer
-from source.vision_transformer_model import VisionTransformerModel
+from source.select_model import select_model
 
 
 class TrainingRoutine(LightningModule):
@@ -14,7 +14,7 @@ class TrainingRoutine(LightningModule):
         self.cfg = cfg
         self.loss_function = select_loss(cfg=cfg)
         self.accuracy = select_accuracy(cfg=cfg)
-        self.model = VisionTransformerModel(cfg=cfg)
+        self.model = select_model(cfg=cfg)
 
 
     def forward(self, x):
