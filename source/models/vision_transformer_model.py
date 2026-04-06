@@ -3,6 +3,7 @@ import torch.nn as nn
 from enum import Enum
 from omegaconf import DictConfig
 
+from source.init_weights import init_weights_kaiming_he
 from source.patch_embeddings import PatchEmbedding
 from source.vision_transformer_encoder_block import VisionTransformerEncoderBlock
 from source.vision_transformer_segmentation_block import VisionTransformerSegmentationBlock
@@ -11,19 +12,6 @@ from source.vision_transformer_segmentation_block import VisionTransformerSegmen
 class Task(Enum):
     CLASSIFICATION = "classification"
     SEGMENTATION = "segmentation"
-
-
-def _init_weights_kaiming_he(m: nn.Module) -> None:
-    """
-    Kaiming He initialization for linear layers.
-    Ideal for models using ReLU or GELU activations.
-    Keep activation variance constant (~1.0) across layers; this is more critical than the actual values themselves.
-    Gradient survival: Prevent degeneration during the first epoch (neither vanishing, nor exploding).
-    """
-    if isinstance(m, nn.Linear):
-        nn.init.kaiming_normal_(m.weight, mode="fan_in", nonlinearity="relu")
-        if m.bias is not None:
-            nn.init.constant_(m.bias, 0)
 
 
 class VisionTransformerModel(nn.Module):
@@ -66,10 +54,10 @@ class VisionTransformerModel(nn.Module):
                 patch_size=cfg.model.patch_side_length
             )
 
-        self.apply(_init_weights_kaiming_he)
+        self.apply(init_weights_kaiming_he)
 
 
-    def forward(self, input_images: torch.Tensor):
+    def forward(self, input_images: torch.Tensor) -> torch.Tensor:
         """
         Process images through the Vision Transformer for either classification or segmentation.
 
