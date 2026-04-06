@@ -23,8 +23,16 @@ class SegmentationLoggerCallback(Callback):
         images = images.to(pl_module.device)
         with torch.no_grad():
             logits = pl_module(images)
-            predictions = torch.argmax(logits, dim=1)
+            if logits.shape[1] == 1:
+                # Binary case: Threshold the sigmoid
+                predictions = (torch.sigmoid(logits) > 0.5).squeeze(1)
+                nb_classes = 2
+            else:
+                # Multi-class: Argmax
+                predictions = torch.argmax(logits, dim=1)
+                nb_classes = logits.shape[1]
 
+        # Enfore three channels because draw_segmentation_masks() requires an RGB image
         images = images.cpu()
         if images.shape[1] == 1:
             images = images.repeat(1, 3, 1, 1)

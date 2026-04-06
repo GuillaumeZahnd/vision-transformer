@@ -20,7 +20,7 @@ class EfficientNetModel(nn.Module):
         # Load the backbone (EfficientNet-B0)
         weights = EfficientNet_B0_Weights.DEFAULT if cfg.model.pretrained else None
         base_model = efficientnet_b0(weights=weights)
-        
+
         # Modify the first layer of the backbone to support the actual channel count of the dataset
         original_conv = base_model.features[0][0]
         base_model.features[0][0] = nn.Conv2d(
@@ -30,10 +30,10 @@ class EfficientNetModel(nn.Module):
             stride=original_conv.stride,
             padding=original_conv.padding,
             bias=False
-        )        
-        
-        self.backbone = base_model.features 
-        
+        )
+
+        self.backbone = base_model.features
+
         # EfficientNet-B0 ends with 1280 channels before the pooling layer
         self.out_channels = 1280
 
@@ -58,6 +58,18 @@ class EfficientNetModel(nn.Module):
 
 
     def forward(self, input_images: torch.Tensor) -> torch.Tensor:
+        """
+        Forward pass through the model backbone and a task-specific head (Classification or Segmentation).
+
+        Args:
+            input_images: Input image batch, of shape (N, C, H, W).
+
+        Returns:
+            Raw model predictions (logits).
+                - For classification tasks: Returns a tensor of shape (N, nb_classes).
+                - For segmentation tasks: Returns a tensor of shape (N, nb_semantic_labels, H, W),
+                  interpolated to the original input spatial resolution.
+        """
         features = self.backbone(input_images)
 
         if self.cfg.model.task == Task.CLASSIFICATION.value:
@@ -67,8 +79,8 @@ class EfficientNetModel(nn.Module):
         elif self.cfg.model.task == Task.SEGMENTATION.value:
             mask_logits = self.simple_decoder(features)
             return torch.nn.functional.interpolate(
-                mask_logits, 
-                size=(self.cfg.dataset.image_height, self.cfg.dataset.image_width), 
-                mode="bilinear", 
+                mask_logits,
+                size=(self.cfg.dataset.image_height, self.cfg.dataset.image_width),
+                mode="bilinear",
                 align_corners=False
             )

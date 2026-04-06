@@ -1,10 +1,10 @@
 # Danilov, Viacheslav; Proutski, Alex; Kirpich, Alexander; Litmanovich, Diana; Gankin, Yuriy (2022), “Chest X-ray dataset for lung segmentation”, Mendeley Data, V2, doi: 10.17632/8gf9vpkhgy.2
 # https://www.nature.com/articles/s41598-022-15013-z
 name: "CHESTXRAY"
-task_type: "image_segmentation_binary"
+task_type: "image_segmentation_binary"  # nb_semantic_labels=1
 nb_channels: 1
 dataset_dir: "/home/guillaume/DATASETS/chest_x_ray/"
 image_height: 512
 image_width: 512
-nb_semantic_labels: 2  # pixel-level segmentation classes
+nb_semantic_labels: 1  # pixel-level segmentation classes (Lung yes/no)
 training_validation_split: 0.9

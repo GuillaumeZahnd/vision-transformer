@@ -25,10 +25,25 @@ class TrainingRoutine(LightningModule):
         images, labels = batch
         predictions = self.forward(x=images)
 
-        loss = self.loss_function(input=predictions, target=labels)
+        if labels.shape != predictions.shape:
+            # Enforce shape alignment
+            # For classification: [B] -> [B, 1]
+            # For segmentation: [B, H, W] -> [B, 1, H, W]
+            labels = labels.view_as(predictions)
 
-        predictions_indices = torch.argmax(predictions, dim=1)
-        accuracy = self.accuracy(predictions_indices, labels)
+        # Loss: Expects Floats
+        loss = self.loss_function(input=predictions, target=labels.float())
+
+        if predictions.shape[1] == 1:
+            # Predictions for Binary (C=1): Thresholding
+            prediction_probabilities = torch.sigmoid(predictions)
+            predictions_indices = (prediction_probabilities > 0.5).long()
+        else:
+            # Predictions for Multi-Class (C>1): Argmax
+            predictions_indices = torch.argmax(predictions, dim=1)
+
+        # Accuracy: Expects Longs
+        accuracy = self.accuracy(predictions_indices.long(), labels.long())
 
         self.log(name="training_loss", value=loss, batch_size=images.shape[0], on_step=False, on_epoch=True)
         self.log('training_accuracy', accuracy, on_step=False, on_epoch=True)
@@ -39,7 +54,14 @@ class TrainingRoutine(LightningModule):
     def validation_step(self, batch, batch_idx, dataloader_idx):
         _, labels = batch
         predictions = self.predict_step(batch, batch_idx)
-        loss = self.loss_function(predictions, labels)
+
+        if labels.shape != predictions.shape:
+            # Enforce shape alignment
+            # For classification: [B] -> [B, 1]
+            # For segmentation: [B, H, W] -> [B, 1, H, W]
+            labels = labels.view_as(predictions)
+
+        loss = self.loss_function(predictions, labels.float())
 
         if dataloader_idx == 0:
             self.log(
@@ -64,7 +86,14 @@ class TrainingRoutine(LightningModule):
     def test_step(self, batch, batch_idx):
         _, labels = batch
         predictions = self.predict_step(batch, batch_idx)
-        loss = self.loss_function(predictions, labels)
+
+        if labels.shape != predictions.shape:
+            # Enforce shape alignment
+            # For classification: [B] -> [B, 1]
+            # For segmentation: [B, H, W] -> [B, 1, H, W]
+            labels = labels.view_as(predictions)
+
+        loss = self.loss_function(input=predictions, target=labels.float())
         self.log(name="test_step_loss", value=loss, batch_size=labels.shape[0])
 
 

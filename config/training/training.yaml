@@ -1,7 +1,7 @@
 nb_epochs: 50
 learning_rate: 1e-3
 batch_size: 4
-loss: "cross_entropy"
+loss: "binary_cross_entropy_and_dice"
 label_smoothing: 0.1
 optimizer: "adam"
 scheduler_step_size: 1
