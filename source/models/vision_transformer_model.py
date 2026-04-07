@@ -51,7 +51,8 @@ class VisionTransformerModel(nn.Module):
                 embedding_dim=cfg.model.embedding_dim,
                 nb_classes=cfg.dataset.nb_semantic_labels,
                 nb_feature_maps=len(cfg.model.layers_for_segmentation),
-                patch_size=cfg.model.patch_side_length
+                image_height=cfg.dataset.image_height,
+                image_width=cfg.dataset.image_width
             )
 
         if not cfg.model.pretrained:
