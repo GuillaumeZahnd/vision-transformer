@@ -54,7 +54,8 @@ class VisionTransformerModel(nn.Module):
                 patch_size=cfg.model.patch_side_length
             )
 
-        self.apply(init_weights_kaiming_he)
+        if not cfg.model.pretrained:
+            self.apply(init_weights_kaiming_he)
 
 
     def forward(self, input_images: torch.Tensor) -> torch.Tensor:
@@ -102,4 +103,4 @@ class VisionTransformerModel(nn.Module):
             return segmented_image
 
         else:
-            raise ValueError("Unknown task '{}'. Valid values are {}.".format(self.cfg.model.task, [e.value for e in Task]))
+            raise ValueError(f"Unknown task '{self.cfg.model.task}'. Valid values are {[t.value for t in Task]}.")

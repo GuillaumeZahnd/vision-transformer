@@ -22,13 +22,13 @@ class EfficientNetModel(nn.Module):
         base_model = efficientnet_b0(weights=weights)
 
         # Modify the first layer of the backbone to support the actual channel count of the dataset
-        original_conv = base_model.features[0][0]
+        original_convolution = base_model.features[0][0]
         base_model.features[0][0] = nn.Conv2d(
-            in_channels=cfg.dataset.nb_channels,
-            out_channels=original_conv.out_channels,
-            kernel_size=original_conv.kernel_size,
-            stride=original_conv.stride,
-            padding=original_conv.padding,
+            in_channels=cfg.dataset.nb_channels,  # This is dataset-specific
+            out_channels=original_convolution.out_channels,
+            kernel_size=original_convolution.kernel_size,
+            stride=original_convolution.stride,
+            padding=original_convolution.padding,
             bias=False
         )
 
@@ -84,3 +84,6 @@ class EfficientNetModel(nn.Module):
                 mode="bilinear",
                 align_corners=False
             )
+
+        else:
+            raise ValueError(f"Unknown task '{self.cfg.model.task}'. Valid values are {[t.value for t in Task]}.")
