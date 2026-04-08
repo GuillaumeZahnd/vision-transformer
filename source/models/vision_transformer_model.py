@@ -32,16 +32,15 @@ class VisionTransformerModel(nn.Module):
             stride=cfg.model.stride
         )
 
-        self.transformer_layers = \
-            nn.ModuleList([
-                VisionTransformerEncoderBlock(
-                    embedding_dim=cfg.model.embedding_dim,
-                    nb_heads=cfg.model.nb_heads,
-                    nb_patches_height=self.embed_patches.nb_patches_height,
-                    nb_patches_width=self.embed_patches.nb_patches_width,
-                    mlp_expansion=cfg.model.mlp_expansion)
-                for _ in range(cfg.model.nb_layers)]
-        )
+        self.transformer_layers = nn.ModuleList([
+            VisionTransformerEncoderBlock(
+                embedding_dim=cfg.model.embedding_dim,
+                nb_heads=cfg.model.nb_heads,
+                nb_patches_height=self.embed_patches.nb_patches_height,
+                nb_patches_width=self.embed_patches.nb_patches_width,
+                mlp_expansion=cfg.model.mlp_expansion
+            ) for _ in range(cfg.model.nb_layers)
+        ])
 
         if cfg.model.task == Task.CLASSIFICATION.value:
             self.multilayer_perceptron_classification_head = nn.Linear(cfg.model.embedding_dim, cfg.dataset.nb_classes)

@@ -9,7 +9,8 @@ class AlibiMultiHeadSelfAttention(nn.Module):
     def __init__(self, embedding_dim:int, nb_heads:int, nb_patches_height: int, nb_patches_width: int) -> None:
         super().__init__()
 
-        assert embedding_dim % nb_heads == 0, "The embedding dimension must be a multiple of the number of heads."
+        assert embedding_dim % nb_heads == 0, \
+            f"The embedding dimension (got {embedding_dim}) must be a multiple of the number of heads (got {nb_heads})."
 
         self.nb_heads = nb_heads
         self.head_dim = embedding_dim // nb_heads
@@ -20,7 +21,8 @@ class AlibiMultiHeadSelfAttention(nn.Module):
         self.linear = nn.Linear(embedding_dim, embedding_dim)
 
         # ALiBi is used for positional encoding
-        alibi, _, _ = get_alibi(nb_heads=self.nb_heads, nb_patches_height=nb_patches_height, nb_patches_width=nb_patches_width)
+        alibi, _, _ = get_alibi(
+            nb_heads=self.nb_heads, nb_patches_height=nb_patches_height, nb_patches_width=nb_patches_width)
         self.register_buffer("alibi", alibi, persistent=False)
 
 

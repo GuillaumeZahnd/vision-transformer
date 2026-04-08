@@ -79,13 +79,13 @@ class BCEAndDiceLoss(nn.Module):
 
 
 def select_loss(cfg: DictConfig) -> torch.nn:
-    loss_nickname = cfg.training.loss
+    loss_nickname = cfg.training.get("loss")
 
     # Cross entropy
     if loss_nickname == Loss.CROSS_ENTROPY.value:
 
-        valid_tasks = ["image_segmentation_multiclass", "image_classification"]
-        is_valid_task = cfg.dataset.task_type in valid_tasks
+        valid_tasks = {"image_segmentation_multiclass", "image_classification"}
+        is_valid_task = cfg.dataset.get("task_type") in valid_tasks
         is_multichannel = (
             cfg.dataset.get("nb_semantic_labels", 0) > 1 or
             cfg.dataset.get("nb_classes", 0) > 1
@@ -93,13 +93,13 @@ def select_loss(cfg: DictConfig) -> torch.nn:
         assert is_valid_task and is_multichannel, \
             f"'{loss_nickname}' requires a multiclass task with more than one output channels."
 
-        loss = torch.nn.CrossEntropyLoss(label_smoothing=cfg.training.label_smoothing)
+        loss = torch.nn.CrossEntropyLoss(label_smoothing=cfg.training.get("label_smoothing"))
 
     # Binary cross entropy
     elif loss_nickname == Loss.BINARY_CROSS_ENTROPY.value:
 
-        valid_tasks = ["image_segmentation_binary", "image_classification"]
-        is_valid_task = cfg.dataset.task_type in valid_tasks
+        valid_tasks = {"image_segmentation_binary", "image_classification"}
+        is_valid_task = cfg.dataset.get("task_type") in valid_tasks
         is_singlechannel = (
             cfg.dataset.get("nb_semantic_labels", 0) == 1 or
             cfg.dataset.get("nb_classes", 0) == 1
@@ -112,8 +112,8 @@ def select_loss(cfg: DictConfig) -> torch.nn:
     # Binary Dice
     elif loss_nickname == Loss.BINARY_DICE.value:
 
-        valid_tasks = ["image_segmentation_binary", "image_segmentation_multiclass"]
-        is_valid_task = cfg.dataset.task_type in valid_tasks
+        valid_tasks = {"image_segmentation_binary", "image_segmentation_multiclass"}
+        is_valid_task = cfg.dataset.get("task_type") in valid_tasks
         assert is_valid_task, \
             f"'{loss_nickname}' requires an image segmentation task."
 
@@ -122,8 +122,8 @@ def select_loss(cfg: DictConfig) -> torch.nn:
     # Binary cross entropy and Dice
     elif loss_nickname == Loss.BINARY_CROSS_ENTROPY_AND_DICE.value:
 
-        valid_tasks = ["image_segmentation_binary"]
-        is_valid_task = cfg.dataset.task_type in valid_tasks
+        valid_tasks = {"image_segmentation_binary"}
+        is_valid_task = cfg.dataset.get("task_type") in valid_tasks
         is_singlechannel = cfg.dataset.get("nb_semantic_labels", 0) == 1
         assert is_valid_task and is_singlechannel, \
             f"'{loss_nickname}' requires a binary segmentation task with exactly one output channel."
@@ -131,7 +131,7 @@ def select_loss(cfg: DictConfig) -> torch.nn:
         weight_bce = 1.0
         weight_dice = 1.0
         loss = BCEAndDiceLoss(
-            weight_bce=weight_bce, weight_dice=weight_dice, label_smoothing=cfg.training.label_smoothing)
+            weight_bce=weight_bce, weight_dice=weight_dice, label_smoothing=cfg.training.get("label_smoothing"))
 
     else:
         raise ValueError(f"Unknown loss '{loss_nickname}'. Valid values are {[t.value for t in Loss]}.")
